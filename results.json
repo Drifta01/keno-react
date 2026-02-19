@@ -1,0 +1,185 @@
+{
+    "value": {
+        "Count": "Count",
+        "OffSet": 0,
+        "Value": {
+            "Id": "Id",
+            "Type": 23,
+            "State": 3,
+            "Edition": "Edition",
+            "ActionStartTs": "ActionStartTs",
+            "ActionEndTs": "ActionEndTs",
+            "Results": [],
+            "GameResults": [
+                {
+                    "SequentialNumber": 1,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 2,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 3,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 4,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 5,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 6,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 7,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 8,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 9,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 10,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 11,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 12,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 13,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 14,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 15,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 16,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 17,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 18,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 19,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                },
+                {
+                    "SequentialNumber": 20,
+                    "Value": "Value",
+                    "GameId": "GameId",
+                    "RoundId": null,
+                    "Horseshoe": false,
+                    "Multiplier": 0
+                }
+            ],
+            "FinishTimer": 0,
+            "Hands": [],
+            "ResultsInfo": null,
+            "Combinations": null,
+            "BroadCastStartTimer": 0,
+            "Total": "Total",
+            "CoincidenceCounter": null,
+            "CoincidenceSeven": null
+        }
+    }
+}
