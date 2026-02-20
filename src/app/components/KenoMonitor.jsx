@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import KenoTicket from "./KenoTicket";
+
 import { useWebSocket } from "../hooks/useWebSocket";
 
 const WS_URL =
-  "wss://tvbetframe.com/proxy-game/game?default-client=5730&access_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IkQyNTk5NTU5REMxNkI5NkZGNkU5OTI2NkQ2MTdBMDgyQjk2MjdDNUEiLCJ0eXAiOiJKV1QiLCJ4NXQiOiIwbG1WV2R3V3VXXzI2WkptMWhlZ2dybGlmRm8ifQ.eyJuYmYiOjE3NzE1NjgzMjcsImV4cCI6MTc3MTU3MDEyNywiaXNzIjoiaHR0cHM6Ly9hcGkubmV0L2lkZW50aXR5LWFwaS8iLCJhdWQiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSIsImh0dHBzOi8vYXBpLm5ldC9pZGVudGl0eS1hcGkvcmVzb3VyY2VzIl0sInRva2VuIjoiIiwidXNlcl9wYXJhbWV0ZXJzIjoie1widXNlcl9pZFwiOjQyMzYwMjc0LFwicGFydG5lcl9jbGllbnRfaWRcIjo1NzMwLFwidXNlcl9pc3Rlc3RcIjp0cnVlLFwiY3VycmVuY3lfY29kZVwiOlwiRVVSXCIsXCJsYW5ndWFnZVwiOlwiZW5cIixcInVzZXJfcmVnaXN0cmF0aW9uX2RhdGVcIjpcIjIwMjYtMDItMjBUMDY6MTg6NDZaXCIsXCJ0YWdfaWRcIjpudWxsLFwidXNlcl9jbHVzdGVyXCI6bnVsbCxcInBhcnRuZXJfY2xpZW50X2NsdXN0ZXJcIjpcIkxvd1wiLFwiY291bnRyeV9uYW1lXCI6XCJuelwiLFwiZGV2aWNlX25hbWVcIjpcIlwiLFwiZGV2aWNlX29zXCI6XCJXaW5kb3dzXCIsXCJkZXZpY2VfdHlwZVwiOlwiRGVza3RvcFwiLFwiZGV2aWNlX2Jyb3dzZXJcIjpcIkNocm9tZVwiLFwicGFydG5lcl9pZHNcIjpbNDc5NiwyMDAyNDFdLFwidmlzaXRvcl9pZFwiOlwiNDIzNjAyNzRcIn0iLCJ1c2VyX3Nlc3Npb25faWQiOiI1OTdkYTBkOC1hZTJhLTQ4OGItOGFlNC03MzlkOTNlMDlhMzYiLCJyb2xlIjoiUGFydG5lclVzZXIiLCJwYXJ0bmVyX2NsaWVudF9pZCI6IjU3MzAiLCJwYXJ0bmVyX3VzZXJfaWQiOiJuOTVmaXFqNzE0LVR2QmV0LURlbW9TaXRlLVVzZXItQkVULUVVUiIsImN1cnJlbmN5X2NvZGUiOiJFVVIiLCJjbGllbnRfaWQiOiJQYXJ0bmVyQ2xpZW50VXNlci01NzMwLW45NWZpcWo3MTQtVHZCZXQtRGVtb1NpdGUtVXNlci1CRVQtRVVSIiwidXNlcl9pZCI6IjQyMzYwMjc0Iiwic2NvcGUiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSJdfQ.hWEjIjkwC0pLqbc6b0NVtRhusjbPK2nTqEmel8gqEL1u7J3WEd689Qy2R2YWiHfTUnvlphntfVkHFST6y93COlP0eO28F4aZHokH_b066MiE_dZeYZG0FeMLIs4WFitn7Vv8xHxQDquH4RH_a2xAVLt_HhLX4PZwRafvAG2MJZR2QGqlmfWipR6_CVGvp7R6GsrCzR0gI3zmuhzv-Nv69LsdrlKmrArAZxAQ33iFcZ1h-R4uzZNnk8z_Tz6-g2j207YtikbJKwD43y6E3LGejh13lAcxEVHK3F4q_rVyJrkElNmAMw0Meajj6iicH-xtxP2fAZXfzsYGpino9XIwEJGJLSr4pjGWky0WKn_jCxGt0V-bzOF8BrPmxX3MP2GP9W9WTzCd3sN_EZR9pgj_KomQy89NWPehoK3-YzReSHRstV-kIhA47JuxZB4ecZDnIIA_InGEzoDgQ-UypIV_-l_IFgpibdNDmOQmrB29MR3eMIWAwPzv-m4_XYoNfo9gwVVBTcPNTx_DQXmlxjrWkF6i41nQyJj49HolcLqB5xlFLMw_FGaaMg_OLK3ijTE1sNasIFzT2TMfh0Kq9CTi6Pd-pfZNlE2edX3MKtlkTOYn0pa2ZlpUH-Hmsfrld0O8xXvjrnbKBalpFLoZvVpTdnqY9OvHKZKMo9SE-Ai_abA";
+  "wss://tvbetframe.com/proxy-game/game?default-client=5730&access_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IkQyNTk5NTU5REMxNkI5NkZGNkU5OTI2NkQ2MTdBMDgyQjk2MjdDNUEiLCJ0eXAiOiJKV1QiLCJ4NXQiOiIwbG1WV2R3V3VXXzI2WkptMWhlZ2dybGlmRm8ifQ.eyJuYmYiOjE3NzE2MDc0NTUsImV4cCI6MTc3MTYwOTI1NSwiaXNzIjoiaHR0cHM6Ly9hcGkubmV0L2lkZW50aXR5LWFwaS8iLCJhdWQiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSIsImh0dHBzOi8vYXBpLm5ldC9pZGVudGl0eS1hcGkvcmVzb3VyY2VzIl0sInRva2VuIjoiIiwidXNlcl9wYXJhbWV0ZXJzIjoie1widXNlcl9pZFwiOjQyMzcxNTc2LFwicGFydG5lcl9jbGllbnRfaWRcIjo1NzMwLFwidXNlcl9pc3Rlc3RcIjp0cnVlLFwiY3VycmVuY3lfY29kZVwiOlwiRVVSXCIsXCJsYW5ndWFnZVwiOlwiZW5cIixcInVzZXJfcmVnaXN0cmF0aW9uX2RhdGVcIjpcIjIwMjYtMDItMjBUMTc6MTA6NTRaXCIsXCJ0YWdfaWRcIjpudWxsLFwidXNlcl9jbHVzdGVyXCI6bnVsbCxcInBhcnRuZXJfY2xpZW50X2NsdXN0ZXJcIjpcIkxvd1wiLFwiY291bnRyeV9uYW1lXCI6XCJuelwiLFwiZGV2aWNlX25hbWVcIjpcIlwiLFwiZGV2aWNlX29zXCI6XCJXaW5kb3dzXCIsXCJkZXZpY2VfdHlwZVwiOlwiRGVza3RvcFwiLFwiZGV2aWNlX2Jyb3dzZXJcIjpcIkNocm9tZVwiLFwicGFydG5lcl9pZHNcIjpbNDc5NiwyMDAyNDFdLFwidmlzaXRvcl9pZFwiOlwiNDIzNzE1NzZcIn0iLCJ1c2VyX3Nlc3Npb25faWQiOiIyN2FlNDliYi00OWYyLTQ4YjctODIwNy05NGE1MTNmZDI5N2IiLCJyb2xlIjoiUGFydG5lclVzZXIiLCJwYXJ0bmVyX2NsaWVudF9pZCI6IjU3MzAiLCJwYXJ0bmVyX3VzZXJfaWQiOiJobWNyZGtlN3FjLVR2QmV0LURlbW9TaXRlLVVzZXItQkVULUVVUiIsImN1cnJlbmN5X2NvZGUiOiJFVVIiLCJjbGllbnRfaWQiOiJQYXJ0bmVyQ2xpZW50VXNlci01NzMwLWhtY3Jka2U3cWMtVHZCZXQtRGVtb1NpdGUtVXNlci1CRVQtRVVSIiwidXNlcl9pZCI6IjQyMzcxNTc2Iiwic2NvcGUiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSJdfQ.b4Nf_PRKpZCDr0KxVQfcR4Vsewx8matl76zOrt2U9Ur-tFXscUU5dMC6EQujGiyCPqpWMWl_On0Ovui1ilEORKgpufjDSwzANiYMPjNDFG-ClKHdZp1xhRNsTqiopC6iLZGUEi_LIAR9yt2OXXCQV3EaETONeUAc0WKK1dHQileaxi2BepMqBEPdoi7iioWFfKLdUKMJfKEr3WCiQ-rT68lZjdQipw6pYFkTQw85Rwm8sT9tFVwSetum6zAvN6T4ipOOr_nCBIDtT_o9T_nHz9gWp0bkb1_91D59b6vUFSrpNQRpiSFTf531GPVspiEqe9QHbGwQbioGGH4OQRdQFEAZvaJ62IL8uprpq7ZV3tofwdx8sLwsHVitZHFAdkE6hD2dc-vzCNp2RfNd2ydLueJKO44QMAAaXL9lzj0ZpceplRjo_TTM_Klo3Mkr-tP6MOkdemfaRItv-S7C220ZPd8yrk0YUBiyWWNbX4uoVZdAiyV2KWXF-aseb5MErttE4fF-g00l40_B3vdXa67gSKns5nGOrHxvzMROFO-x0FidS3kSygTWxcACk7D0tGFGrjOAGrqN5zpy_MhurayaqysHkzidQvybZwKDQERx5MvaPWfRAYrnSx86J-sA-i0LHKkYOemCsSfMs829py2TP8KQ53R5NDfbgKTM_bhz0EA";
 
 const GAME_EVENT = JSON.stringify({
   target: "CurrentGameResultSubscribe",
@@ -16,6 +18,7 @@ function KenoMonitor() {
   const [selectedNumbers, setSelectedNumbers] = useState([]);
   const [selectedNumbersDrawn, setSelectedNumbersDrawn] = useState([]);
   const [confirmedTickets, setConfirmedTickets] = useState([]);
+  const [winLog, setWinLog] = useState([]); // New state for the win log
   const [gameHistory, setGameHistory] = useState([]); // New state for history
   const [isLoading, setIsLoading] = useState(true);
   const { lastMessage, isConnected, sendMessage } = useWebSocket(WS_URL);
@@ -113,7 +116,25 @@ function KenoMonitor() {
                           id: gameEdition,
                           numbers: newNumbers,
                         };
-                        return [newEntry, ...prevHistory].slice(0, 20);
+                        // Check for wins on confirmed tickets
+                        confirmedTickets.forEach((ticket, index) => {
+                          const hits = ticket.filter((number) =>
+                            newNumbers.includes(number),
+                          ).length;
+                          // A "win" is logged only when all numbers on a ticket match
+                          if (ticket.length > 0 && hits === ticket.length) {
+                            setWinLog((prevLog) => [
+                              {
+                                ticketId: `#${index + 1}`,
+                                hits,
+                                timestamp: new Date(),
+                              },
+                              ...prevLog,
+                            ]);
+                          }
+                        });
+
+                        return [newEntry, ...prevHistory].slice(0, 50); // Increased history to 50
                       }
                       return prevHistory;
                     });
@@ -200,12 +221,12 @@ function KenoMonitor() {
   return (
     <div className="bg-[#0f172a] text-white min-h-screen flex grow p-4 md:p-8 font-sans">
       <div className="flex flex-col lg:flex-row gap-8  max-w-screen-2xl mx-auto">
-        {/* Left Column: Game History */}
-        <div className="w-full lg:w-80 shrink-0">
-          <h2 className="text-1xl text-blue-400 font-bold mb-6 flex  gap-2">
+        {/* Results */}
+        <div className="w-full md:w-100 shrink-0">
+          <h2 className="text-1xl text-blue-400 font-bold mb-0 flex gap-0">
             Results
           </h2>
-          <div className="space-y-3 overflow-y-auto max-h-[70vh] pr-2 custom-scrollbar">
+          <div className="space-y-1 overflow-y-auto max-h-[90vh] pr-2 custom-scrollbar">
             {isLoading && gameHistory.length === 0 ? (
               <p className="text-gray-400 animate-pulse">
                 Waiting for first game to complete...
@@ -215,7 +236,7 @@ function KenoMonitor() {
                 <div
                   key={game.id}
                   className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm hover:bg-slate-800 transition-colors">
-                  <h4 className="font-bold text-sm text-blue-300 mb-2 tracking-widest uppercase">
+                  <h4 className="font-bold text-sm text-blue-300 mb-2 tracking-widest uppercase r">
                     Game ID: {game.id}
                   </h4>
                   <div className="flex flex-wrap gap-1">
@@ -238,30 +259,44 @@ function KenoMonitor() {
         </div>
 
         {/* Middle Column: Keno Grid */}
-        <div className="grow flex justify-center">
-          <div className="w-full bg-black/40 p-6 md:p-10 rounded-3xl border border-slate-800 shadow-2xl">
-            <div
-              className={`
-                  p-3
-                  rounded-xl
-                  mb-8
-                  text-center
-                  font-bold
-                  tracking-wider
-                  transition-all
-                  shadow-inner
-                  ${
-                    connectionStatus === "Disconnected"
-                      ? "bg-red-950/50 text-red-400 border border-red-900"
-                      : "bg-green-950/50 text-green-400 border border-green-900"
-                  }
-                `}>
-              <span
-                className={`inline-block w-2 h-2 rounded-full mr-2 ${connectionStatus === "Disconnected" ? "bg-red-500 animate-pulse" : "bg-green-500"}`}></span>
-              SYSTEM STATUS: {connectionStatus.toUpperCase()}
+        <div className="flex flex-row-reverse w-fit ">
+          <div className="w-full px-4 bg-black/40 p-2 rounded-3xl border: border-slate-800 shadow-2xl">
+            {/* Statistics  */}
+            <div className="grid grid-cols-2 gap-2 mb-2 ">
+              <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
+                <h4 className="font-bold text-sm text-red-400 mb-2 tracking-widest uppercase">
+                  Hot Numbers (Last 10)
+                </h4>
+                <p className="text-gray-300 wrap-break-word text-sm">
+                  {stats.hot?.join(", ") || "N/A"}
+                </p>
+              </div>
+              <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
+                <h4 className="font-bold text-sm text-cyan-400 mb-2 tracking-widest uppercase">
+                  Cold Numbers (Last 10)
+                </h4>
+                <p className="text-gray-300 wrap-break-word text-sm">
+                  {stats.cold?.join(", ") || "N/A"}
+                </p>
+              </div>
+              <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
+                <h4 className="font-bold text-sm text-gray-300 mb-2 tracking-widest uppercase">
+                  Most Common (All Time)
+                </h4>
+                <p className="text-gray-300 wrap-break-word text-sm">
+                  {stats.mostCommon?.join(", ") || "N/A"}
+                </p>
+              </div>
+              <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
+                <h4 className="font-bold text-sm text-gray-400 mb-2 tracking-widest uppercase">
+                  Least Common (All Time)
+                </h4>
+                <p className="text-gray-300 wrap-break-word text-sm">
+                  {stats.leastCommon?.join(", ") || "N/A"}
+                </p>
+              </div>
             </div>
-
-            <div className="grid grid-cols-10 gap-2 md:gap-4 mb-10 place-items-center">
+            <div className="grid grid-cols-10 gap-2 md:gap-3 mb-10 place-items-center">
               {Array.from({ length: 80 }, (_, i) => i + 1).map((number) => {
                 const isDrawn = drawnNumbers.includes(number);
                 const isSelected = selectedNumbers.includes(number);
@@ -327,93 +362,105 @@ function KenoMonitor() {
           </div>
         </div>
 
-        {/* Right Column: Stats Panel */}
+        {/* Stats Panel */}
         <div className="w-full lg:w-72 shrink-0">
-          <h2 className="text-xl text-blue-400 font-bold mb-6">Statistics</h2>
           <div className="space-y-4">
             <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-              <h4 className="font-bold text-sm text-blue-300 mb-2 tracking-widest uppercase">
-                Your Selections
-              </h4>
               <p className="text-gray-300 wrap-break-word text-sm">
                 {selectedNumbers.length > 0
                   ? selectedNumbers.join(", ")
-                  : "None"}
+                  : "selected numbers will appear here."}
               </p>
             </div>
-            <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-              <div className="flex justify-between items-center mb-2">
-                <h4 className="font-bold text-sm text-amber-400 tracking-widest uppercase">
-                  Confirmed Tickets
-                </h4>
-                {confirmedTickets.length > 0 && (
-                  <button
-                    onClick={() => setConfirmedTickets([])}
-                    className="text-xs bg-red-800 hover:bg-red-700 text-white font-bold py-1 px-2 rounded transition-colors">
-                    Clear All
-                  </button>
-                )}
-              </div>
-              <div className="space-y-2">
+            {/* Confirmed Tickets */}
+            <h4 className="font-bold text-sm text-amber-400 tracking-widest uppercase float-r">
+              Confirmed Tickets
+            </h4>
+            <div className="flex justify-between items-center mb-2 ">
+              {confirmedTickets.length > 0 && (
+                <button
+                  onClick={() => setConfirmedTickets([])}
+                  className="text-xs bg-red-800 hover:bg-red-700 text-white font-bold py-1 px-2 rounded transition-colors">
+                  Clear All
+                </button>
+              )}
+            </div>
+            <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm ">
+              <div className="space-y-3 overflow-y-auto max-h-[70vh] pr-2 custom-scrollbar">
                 {confirmedTickets.length > 0 ? (
-                  confirmedTickets.map((ticket, index) => (
-                    <div
-                      key={index}
-                      className="text-gray-300 wrap-break-word bg-slate-700/80 p-2 rounded-md">
-                      <p className="flex flex-wrap gap-x-2 gap-y-1">
-                        {ticket.map((number, numIndex) => (
-                          <span
-                            key={numIndex}
-                            className={
-                              drawnNumbers.includes(number)
-                                ? "text-sky-400 font-bold"
-                                : ""
-                            }>
-                            {number}
-                          </span>
-                        ))}
-                      </p>
-                    </div>
-                  ))
+                  confirmedTickets.map((ticket, index) => {
+                    const hits = ticket.filter((number) =>
+                      drawnNumbers.includes(number),
+                    );
+                    return (
+                      <KenoTicket
+                        key={index}
+                        ticketId={`#${index + 1}`}
+                        selectedNumbers={ticket}
+                        drawnNumbers={drawnNumbers}
+                        hitsCount={hits.length}
+                      />
+                    );
+                  })
                 ) : (
                   <p className="text-gray-500 italic">No tickets confirmed.</p>
                 )}
               </div>
             </div>
+
+            {/* Win Log */}
             <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-              <h4 className="font-bold text-sm text-red-400 mb-2 tracking-widest uppercase">
-                Hot Numbers (Last 10)
+              <h4 className="font-bold text-sm text-green-400 tracking-widest uppercase mb-3">
+                Hit History
               </h4>
-              <p className="text-gray-300 wrap-break-word text-sm">
-                {stats.hot?.join(", ") || "N/A"}
-              </p>
-            </div>
-            <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-              <h4 className="font-bold text-sm text-cyan-400 mb-2 tracking-widest uppercase">
-                Cold Numbers (Last 10)
-              </h4>
-              <p className="text-gray-300 wrap-break-word text-sm">
-                {stats.cold?.join(", ") || "N/A"}
-              </p>
-            </div>
-            <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-              <h4 className="font-bold text-sm text-gray-300 mb-2 tracking-widest uppercase">
-                Most Common (All Time)
-              </h4>
-              <p className="text-gray-300 wrap-break-word text-sm">
-                {stats.mostCommon?.join(", ") || "N/A"}
-              </p>
-            </div>
-            <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-              <h4 className="font-bold text-sm text-gray-400 mb-2 tracking-widest uppercase">
-                Least Common (All Time)
-              </h4>
-              <p className="text-gray-300 wrap-break-word text-sm">
-                {stats.leastCommon?.join(", ") || "N/A"}
-              </p>
+              <div className="space-y-2 overflow-y-auto max-h-[150px] pr-2 custom-scrollbar">
+                {winLog.length > 0 ? (
+                  winLog.map((log, index) => (
+                    <div
+                      key={index}
+                      className="text-sm p-2 rounded-lg bg-green-900/30">
+                      <p className="font-bold text-green-300">
+                        Ticket {log.ticketId} scored {log.hits} hit
+                        {log.hits > 1 ? "s" : ""}!
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {log.timestamp.toLocaleTimeString()}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500 italic text-sm">
+                    No wins recorded yet.
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div
+        className={`
+          fixed
+          bottom-6
+          right-6
+          p-2
+          rounded-lg
+          text-xs
+          font-bold
+          tracking-wider
+          transition-all
+          shadow-lg
+          z-50
+          ${
+            connectionStatus === "Disconnected"
+              ? "bg-red-950/80 text-red-400 border border-red-900"
+              : "bg-green-950/80 text-green-400 border border-slate-500"
+          }
+        `}>
+        <span
+          className={`inline-block w-2 h-2 rounded-full mr-2 ${connectionStatus === "Disconnected" ? "bg-red-500 animate-pulse" : "bg-green-500"}`}></span>
+        STATUS: {connectionStatus.toUpperCase()}
       </div>
 
       <style>{`
@@ -464,18 +511,18 @@ function KenoMonitor() {
           border-radius: 50%;
           z-index: 1;
         }
-          /* Selected and Drawn State -  Bright/Green 3D Ball*/
-          .ball-selected-drawn {
-          background: radial-gradient(circle at 35% 35%, #34d399, #16a34a 60%, #15803d 100%);
-          box-shadow: === inset -3px -3px 6px rgba(0,0,0,0.4), 0 0 15px rgba(59,130,246,0.5);
-          border: 2px solid green;
+        /* Selected & Drawn State - Glowing Green "Win" Ball */
+        .ball-selected-drawn {
+          background: radial-gradient(circle at 35% 35%, #86efac, #16a34a 70%, #14532d 100%); /* Light green to dark green */
+          box-shadow: inset -3px -3px 6px rgba(0,0,0,0.4), 0 0 20px #34d399, 0 0 10px #10b981; /* Inner shadow + green glow */
+          border: 2px solid #f0fdf4; /* A very light green/white border */
         }
-          .ball-selected-drawn::before {
+        .ball-selected-drawn::before {
           content: '';
           position: absolute;
           width: 65%;
           height: 65%;
-          background: 2px solid green;
+          background: white; /* The inner circle for the number */
           border-radius: 50%;
           z-index: 1;
         }
