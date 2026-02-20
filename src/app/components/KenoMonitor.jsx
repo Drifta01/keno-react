@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useWebSocket } from "../hooks/useWebSocket";
 
-// The new, valid WebSocket URL you provided
 const WS_URL =
-  "wss://tvbetframe.com/proxy-game/game?default-client=5730&access_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IkQyNTk5NTU5REMxNkI5NkZGNkU5OTI2NkQ2MTdBMDgyQjk2MjdDNUEiLCJ0eXAiOiJKV1QiLCJ4NXQiOiIwbG1WV2R3V3VXXzI2WkptMWhlZ2dybGlmRm8ifQ.eyJuYmYiOjE3NzE1NjYyMTksImV4cCI6MTc3MTU2ODAxOSwiaXNzIjoiaHR0cHM6Ly9hcGkubmV0L2lkZW50aXR5LWFwaS8iLCJhdWQiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSIsImh0dHBzOi8vYXBpLm5ldC9pZGVudGl0eS1hcGkvcmVzb3VyY2VzIl0sInRva2VuIjoiIiwidXNlcl9wYXJhbWV0ZXJzIjoie1widXNlcl9pZFwiOjQyMzU5NzMxLFwicGFydG5lcl9jbGllbnRfaWRcIjo1NzMwLFwidXNlcl9pc3Rlc3RcIjp0cnVlLFwiY3VycmVuY3lfY29kZVwiOlwiRVVSXCIsXCJsYW5ndWFnZVwiOlwiZW5cIixcInVzZXJfcmVnaXN0cmF0aW9uX2RhdGVcIjpcIjIwMjYtMDItMjBUMDU6NDM6MzlaXCIsXCJ0YWdfaWRcIjpudWxsLFwidXNlcl9jbHVzdGVyXCI6bnVsbCxcInBhcnRuZXJfY2xpZW50X2NsdXN0ZXJcIjpcIkxvd1wiLFwiY291bnRyeV9uYW1lXCI6XCJuelwiLFwiZGV2aWNlX25hbWVcIjpcIlwiLFwiZGV2aWNlX29zXCI6XCJXaW5kb3dzXCIsXCJkZXZpY2VfdHlwZVwiOlwiRGVza3RvcFwiLFwiZGV2aWNlX2Jyb3dzZXJcIjpcIkNocm9tZVwiLFwicGFydG5lcl9pZHNcIjpbNDc5NiwyMDAyNDFdLFwidmlzaXRvcl9pZFwiOlwiNDIzNTk3MzFcIn0iLCJ1c2VyX3Nlc3Npb25faWQiOiI2ODlkNWY3MS00OTZmLTQxYTAtODNjNS1kMTgwNzg5NWU0MjQiLCJyb2xlIjoiUGFydG5lclVzZXIiLCJwYXJ0bmVyX2NsaWVudF9pZCI6IjU3MzAiLCJwYXJ0bmVyX3VzZXJfaWQiOiJicmQ3YTNuanEwLVR2QmV0LURlbW9TaXRlLVVzZXItQkVULUVVUiIsImN1cnJlbmN5X2NvZGUiOiJFVVIiLCJjbGllbnRfaWQiOiJQYXJ0bmVyQ2xpZW50VXNlci01NzMwLWJyZDdhM25qcTAtVHZCZXQtRGVtb1NpdGUtVXNlci1CRVQtRVVSIiwidXNlcl9pZCI6IjQyMzU5NzMxIiwic2NvcGUiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSJdfQ.0LIzJCY1HQleMJxVbcY3vk4DZDMbRe841XHBaH-ha4pvrd0yYuW283MO1-Ypff1GQP5Xm93OuASGvvE5dyjKPOulKB9d6Oc4pdW8CVx-jol3qT9EYbcAiHgreNcOJLsP5mbzPSLh_e8xJqWwx8fe4ih5A6IJ0rjz4nEpNKtJPyDQzd3LRtTqP-xSq2Oqyteu8HQf_x46OKrLheMGteqr6WZYf_HOn4FQMRvbRCRCKGwfjhTi2K-UibF7YLOBaOwxI2bcT1rC0RsYkYHZ89WmBdCQeM5YUWvHrvcpJZ4LvEYIvX9kuAT0DL4SvduTYliQ886NltvMhtdA_rnzvHD4SdJA2Aacw-kT-WheEVSpTlMy2ZVn6CGiJdhlEWhIIf4lDI4doW_1-dABM5goNTbPCgBB42qAdz92uSI0OFCUBkIbwc3rqCh0rHZQVEejZvBHRjoPRjgZBslPKnmC9wf_65THnA8ieIsuXCpXqeBPhH4Jc2itmsemAmsv8HSSn_n4lUGb1tVjdi5uE16LZRmca4-TxltzzInqrGl_6prcM7uQpWHm_8t8LslICpCDG_vU2boZ7vTHo4TspWgtIViWT47sWLlqdpq-5_1y0gjY-dPAkKH4rVsrz9bTlQVVHidercpVaVEx7SmtgmR3QMO3jm2eJzd1mGC1N-D6EKPSYns";
+  "wss://tvbetframe.com/proxy-game/game?default-client=5730&access_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IkQyNTk5NTU5REMxNkI5NkZGNkU5OTI2NkQ2MTdBMDgyQjk2MjdDNUEiLCJ0eXAiOiJKV1QiLCJ4NXQiOiIwbG1WV2R3V3VXXzI2WkptMWhlZ2dybGlmRm8ifQ.eyJuYmYiOjE3NzE1NjgzMjcsImV4cCI6MTc3MTU3MDEyNywiaXNzIjoiaHR0cHM6Ly9hcGkubmV0L2lkZW50aXR5LWFwaS8iLCJhdWQiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSIsImh0dHBzOi8vYXBpLm5ldC9pZGVudGl0eS1hcGkvcmVzb3VyY2VzIl0sInRva2VuIjoiIiwidXNlcl9wYXJhbWV0ZXJzIjoie1widXNlcl9pZFwiOjQyMzYwMjc0LFwicGFydG5lcl9jbGllbnRfaWRcIjo1NzMwLFwidXNlcl9pc3Rlc3RcIjp0cnVlLFwiY3VycmVuY3lfY29kZVwiOlwiRVVSXCIsXCJsYW5ndWFnZVwiOlwiZW5cIixcInVzZXJfcmVnaXN0cmF0aW9uX2RhdGVcIjpcIjIwMjYtMDItMjBUMDY6MTg6NDZaXCIsXCJ0YWdfaWRcIjpudWxsLFwidXNlcl9jbHVzdGVyXCI6bnVsbCxcInBhcnRuZXJfY2xpZW50X2NsdXN0ZXJcIjpcIkxvd1wiLFwiY291bnRyeV9uYW1lXCI6XCJuelwiLFwiZGV2aWNlX25hbWVcIjpcIlwiLFwiZGV2aWNlX29zXCI6XCJXaW5kb3dzXCIsXCJkZXZpY2VfdHlwZVwiOlwiRGVza3RvcFwiLFwiZGV2aWNlX2Jyb3dzZXJcIjpcIkNocm9tZVwiLFwicGFydG5lcl9pZHNcIjpbNDc5NiwyMDAyNDFdLFwidmlzaXRvcl9pZFwiOlwiNDIzNjAyNzRcIn0iLCJ1c2VyX3Nlc3Npb25faWQiOiI1OTdkYTBkOC1hZTJhLTQ4OGItOGFlNC03MzlkOTNlMDlhMzYiLCJyb2xlIjoiUGFydG5lclVzZXIiLCJwYXJ0bmVyX2NsaWVudF9pZCI6IjU3MzAiLCJwYXJ0bmVyX3VzZXJfaWQiOiJuOTVmaXFqNzE0LVR2QmV0LURlbW9TaXRlLVVzZXItQkVULUVVUiIsImN1cnJlbmN5X2NvZGUiOiJFVVIiLCJjbGllbnRfaWQiOiJQYXJ0bmVyQ2xpZW50VXNlci01NzMwLW45NWZpcWo3MTQtVHZCZXQtRGVtb1NpdGUtVXNlci1CRVQtRVVSIiwidXNlcl9pZCI6IjQyMzYwMjc0Iiwic2NvcGUiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSJdfQ.hWEjIjkwC0pLqbc6b0NVtRhusjbPK2nTqEmel8gqEL1u7J3WEd689Qy2R2YWiHfTUnvlphntfVkHFST6y93COlP0eO28F4aZHokH_b066MiE_dZeYZG0FeMLIs4WFitn7Vv8xHxQDquH4RH_a2xAVLt_HhLX4PZwRafvAG2MJZR2QGqlmfWipR6_CVGvp7R6GsrCzR0gI3zmuhzv-Nv69LsdrlKmrArAZxAQ33iFcZ1h-R4uzZNnk8z_Tz6-g2j207YtikbJKwD43y6E3LGejh13lAcxEVHK3F4q_rVyJrkElNmAMw0Meajj6iicH-xtxP2fAZXfzsYGpino9XIwEJGJLSr4pjGWky0WKn_jCxGt0V-bzOF8BrPmxX3MP2GP9W9WTzCd3sN_EZR9pgj_KomQy89NWPehoK3-YzReSHRstV-kIhA47JuxZB4ecZDnIIA_InGEzoDgQ-UypIV_-l_IFgpibdNDmOQmrB29MR3eMIWAwPzv-m4_XYoNfo9gwVVBTcPNTx_DQXmlxjrWkF6i41nQyJj49HolcLqB5xlFLMw_FGaaMg_OLK3ijTE1sNasIFzT2TMfh0Kq9CTi6Pd-pfZNlE2edX3MKtlkTOYn0pa2ZlpUH-Hmsfrld0O8xXvjrnbKBalpFLoZvVpTdnqY9OvHKZKMo9SE-Ai_abA";
 
 const GAME_EVENT = JSON.stringify({
   target: "CurrentGameResultSubscribe",
@@ -16,6 +15,7 @@ function KenoMonitor() {
   const [drawnNumbers, setDrawnNumbers] = useState([]);
   const [selectedNumbers, setSelectedNumbers] = useState([]);
   const [selectedNumbersDrawn, setSelectedNumbersDrawn] = useState([]);
+  const [confirmedTickets, setConfirmedTickets] = useState([]);
   const [gameHistory, setGameHistory] = useState([]); // New state for history
   const [isLoading, setIsLoading] = useState(true);
   const { lastMessage, isConnected, sendMessage } = useWebSocket(WS_URL);
@@ -29,7 +29,6 @@ function KenoMonitor() {
   });
 
   const handleNumberClick = (number) => {
-    // Prevent selection if the number has already been drawn
     if (drawnNumbers.includes(number)) {
       return;
     }
@@ -46,7 +45,6 @@ function KenoMonitor() {
     );
   };
 
-  // Perform handshake once connected
   useEffect(() => {
     if (isConnected && !handshake) {
       sendMessage(JSON.stringify({ protocol: "json", version: 1 }) + "\u001e");
@@ -55,7 +53,6 @@ function KenoMonitor() {
     }
   }, [isConnected, handshake, sendMessage]);
 
-  // Send heartbeat to keep connection alive
   useEffect(() => {
     if (isConnected) {
       const interval = setInterval(() => {
@@ -66,10 +63,8 @@ function KenoMonitor() {
     }
   }, [isConnected, sendMessage]);
 
-  // Process incoming messages
   useEffect(() => {
     if (lastMessage) {
-      // Introduce a small delay to handle potential message fragmentation
       const timer = setTimeout(() => {
         const incomingMessages = lastMessage.data.split("\u001e");
         incomingMessages.forEach((message) => {
@@ -84,52 +79,45 @@ function KenoMonitor() {
 
               if (parsedMessage.type === 3) {
                 const items = parsedMessage.result?.data?.results?.items;
-                // A type 3 message with 0 items indicates a new game is starting.
+
                 if (Array.isArray(items) && items.length === 0) {
-                  // New game signal, clear the board and any pending clear timers
                   if (clearBoardTimerRef.current) {
                     clearTimeout(clearBoardTimerRef.current);
                     clearBoardTimerRef.current = null;
                   }
                   setDrawnNumbers([]);
-                  setSelectedNumbers([]); // Clear selections for the new game
-                  setSelectedNumbersDrawn([]); // Clear selected drawn numbers for the new game
+                  setSelectedNumbers([]);
+                  setSelectedNumbersDrawn([]);
                 }
-              }
-              // Handle type 1: Live updates AND Final Game Result
-              else if (
+              } else if (
                 parsedMessage.type === 1 &&
                 parsedMessage.target === "UpdateCurrentGameResult"
               ) {
                 const gameData = parsedMessage.arguments[0]?.data;
                 const items = gameData?.results?.items;
-                const gameEdition = gameData?.gameEdition; // The unique ID for the game
+                const gameEdition = gameData?.gameEdition;
 
                 if (Array.isArray(items)) {
                   const newNumbers = items
                     .map((item) => parseInt(item.value, 10))
                     .filter((n) => !isNaN(n));
 
-                  // Always update the live grid with the latest numbers
                   setDrawnNumbers(newNumbers);
 
-                  // If we have 20 numbers, the game is over. Save it to history.
                   if (gameEdition && newNumbers.length === 20) {
                     setGameHistory((prevHistory) => {
-                      // Avoid adding duplicate entries
                       if (
                         !prevHistory.some((game) => game.id === gameEdition)
                       ) {
                         const newEntry = {
                           id: gameEdition,
-                          numbers: newNumbers, // Keep original order
+                          numbers: newNumbers,
                         };
                         return [newEntry, ...prevHistory].slice(0, 20);
                       }
                       return prevHistory;
                     });
 
-                    // Set a timer to clear the board after 10 seconds
                     if (clearBoardTimerRef.current) {
                       clearTimeout(clearBoardTimerRef.current);
                     }
@@ -138,7 +126,7 @@ function KenoMonitor() {
                       setSelectedNumbers([]);
                       setSelectedNumbersDrawn([]);
                       clearBoardTimerRef.current = null;
-                    }, 10000); // 10 seconds
+                    }, 10000);
                   }
                 }
               }
@@ -152,15 +140,18 @@ function KenoMonitor() {
             }
           }
         });
-      }, 50); // 50ms delay
+      }, 50);
 
-      return () => clearTimeout(timer); // Cleanup the timer
+      return () => clearTimeout(timer);
     }
   }, [lastMessage, isLoading]);
 
   useEffect(() => {
     if (gameHistory.length > 0) {
-      const allNumbers = gameHistory.flatMap((game) => game.numbers);
+      const allNumbers = gameHistory.reduce(
+        (acc, game) => acc.concat(game.numbers),
+        [],
+      );
       const frequency = allNumbers.reduce((acc, num) => {
         acc[num] = (acc[num] || 0) + 1;
         return acc;
@@ -178,9 +169,11 @@ function KenoMonitor() {
         .map(([num]) => parseInt(num, 10))
         .reverse();
 
-      // Hot/Cold from last 10 games
       const recentHistory = gameHistory.slice(0, 10);
-      const recentNumbers = recentHistory.flatMap((game) => game.numbers);
+      const recentNumbers = recentHistory.reduce(
+        (acc, game) => acc.concat(game.numbers),
+        [],
+      );
       const recentFrequency = recentNumbers.reduce((acc, num) => {
         acc[num] = (acc[num] || 0) + 1;
         return acc;
@@ -272,7 +265,16 @@ function KenoMonitor() {
               {Array.from({ length: 80 }, (_, i) => i + 1).map((number) => {
                 const isDrawn = drawnNumbers.includes(number);
                 const isSelected = selectedNumbers.includes(number);
-                const isMatch = isDrawn && isSelected;
+
+                let isInConfirmed = false;
+                for (const ticket of confirmedTickets) {
+                  if (ticket.includes(number)) {
+                    isInConfirmed = true;
+                    break;
+                  }
+                }
+
+                const isMatch = isDrawn && isInConfirmed;
 
                 return (
                   <button
@@ -295,15 +297,32 @@ function KenoMonitor() {
 
             <div className="flex flex-col sm:flex-row justify-center gap-4 md:gap-8">
               <button
-                onClick={() =>
-                  setSelectedNumbers && setSelectedNumbersDrawn([])
-                }
+                onClick={() => {
+                  setSelectedNumbers([]);
+                  setSelectedNumbersDrawn([]);
+                }}
                 className="px-12 py-4 rounded-full border border-white/10 bg-white/5 text-gray-400 font-bold uppercase tracking-widest hover:bg-white/10 transition-all active:scale-95 shadow-lg">
                 CLEAR
               </button>
-              <button className="px-12 py-4 rounded-full bg-linear-to-b from-[#facc15] to-[#a16207] text-black font-black uppercase tracking-widest hover:brightness-110 transition-all active:scale-95 shadow-[0_0_20px_rgba(234,179,8,0.3)]">
+              <button
+                onClick={() => {
+                  if (selectedNumbers.length > 0) {
+                    setConfirmedTickets((prev) => [...prev, selectedNumbers]);
+                    setSelectedNumbers([]);
+                  }
+                }}
+                className="px-12 py-4 rounded-full bg-linear-to-b from-[#facc15] to-[#a16207] text-black font-black uppercase tracking-widest hover:brightness-110 transition-all active:scale-95 shadow-[0_0_20px_rgba(234,179,8,0.3)]">
                 CONFIRM
               </button>
+            </div>
+
+            <div className="text-center mt-6">
+              <p className="text-xl font-semibold text-gray-300">
+                Numbers Drawn:{" "}
+                <span className="text-white font-bold">
+                  {drawnNumbers.length} / 20
+                </span>
+              </p>
             </div>
           </div>
         </div>
@@ -321,6 +340,45 @@ function KenoMonitor() {
                   ? selectedNumbers.join(", ")
                   : "None"}
               </p>
+            </div>
+            <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
+              <div className="flex justify-between items-center mb-2">
+                <h4 className="font-bold text-sm text-amber-400 tracking-widest uppercase">
+                  Confirmed Tickets
+                </h4>
+                {confirmedTickets.length > 0 && (
+                  <button
+                    onClick={() => setConfirmedTickets([])}
+                    className="text-xs bg-red-800 hover:bg-red-700 text-white font-bold py-1 px-2 rounded transition-colors">
+                    Clear All
+                  </button>
+                )}
+              </div>
+              <div className="space-y-2">
+                {confirmedTickets.length > 0 ? (
+                  confirmedTickets.map((ticket, index) => (
+                    <div
+                      key={index}
+                      className="text-gray-300 wrap-break-word bg-slate-700/80 p-2 rounded-md">
+                      <p className="flex flex-wrap gap-x-2 gap-y-1">
+                        {ticket.map((number, numIndex) => (
+                          <span
+                            key={numIndex}
+                            className={
+                              drawnNumbers.includes(number)
+                                ? "text-sky-400 font-bold"
+                                : ""
+                            }>
+                            {number}
+                          </span>
+                        ))}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500 italic">No tickets confirmed.</p>
+                )}
+              </div>
             </div>
             <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
               <h4 className="font-bold text-sm text-red-400 mb-2 tracking-widest uppercase">
