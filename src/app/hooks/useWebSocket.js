@@ -4,14 +4,7 @@ import { useState, useEffect, useRef } from "react";
 export const useWebSocket = (url) => {
   const [lastMessage, setLastMessage] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [drawnNumbers, setDrawnNumbers] = useState(Array(80).fill(false));
   const socketRef = useRef(null);
-
-
-
-
-
-
 
   useEffect(() => {
     if (!url) {

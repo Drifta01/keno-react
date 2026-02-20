@@ -31,7 +31,9 @@
     "**/*.mts,",
     "**/*.cts",
     "**/*.js",
-    "src/app/components/Button.jsx"
-  ]
+    "src/app/components/Button.jsx",
+    "src/app/components/KenoMonitor.jsx"
+  ],
   // "exclude": ["node_modules"]
+  "exclude": ["node_modules"]
 }
