@@ -4,7 +4,7 @@ import KenoTicket from "./KenoTicket";
 import { useWebSocket } from "../hooks/useWebSocket";
 
 const WS_URL =
-  "wss://tvbetframe.com/proxy-game/game?default-client=5730&access_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IkQyNTk5NTU5REMxNkI5NkZGNkU5OTI2NkQ2MTdBMDgyQjk2MjdDNUEiLCJ0eXAiOiJKV1QiLCJ4NXQiOiIwbG1WV2R3V3VXXzI2WkptMWhlZ2dybGlmRm8ifQ.eyJuYmYiOjE3NzE2MDc0NTUsImV4cCI6MTc3MTYwOTI1NSwiaXNzIjoiaHR0cHM6Ly9hcGkubmV0L2lkZW50aXR5LWFwaS8iLCJhdWQiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSIsImh0dHBzOi8vYXBpLm5ldC9pZGVudGl0eS1hcGkvcmVzb3VyY2VzIl0sInRva2VuIjoiIiwidXNlcl9wYXJhbWV0ZXJzIjoie1widXNlcl9pZFwiOjQyMzcxNTc2LFwicGFydG5lcl9jbGllbnRfaWRcIjo1NzMwLFwidXNlcl9pc3Rlc3RcIjp0cnVlLFwiY3VycmVuY3lfY29kZVwiOlwiRVVSXCIsXCJsYW5ndWFnZVwiOlwiZW5cIixcInVzZXJfcmVnaXN0cmF0aW9uX2RhdGVcIjpcIjIwMjYtMDItMjBUMTc6MTA6NTRaXCIsXCJ0YWdfaWRcIjpudWxsLFwidXNlcl9jbHVzdGVyXCI6bnVsbCxcInBhcnRuZXJfY2xpZW50X2NsdXN0ZXJcIjpcIkxvd1wiLFwiY291bnRyeV9uYW1lXCI6XCJuelwiLFwiZGV2aWNlX25hbWVcIjpcIlwiLFwiZGV2aWNlX29zXCI6XCJXaW5kb3dzXCIsXCJkZXZpY2VfdHlwZVwiOlwiRGVza3RvcFwiLFwiZGV2aWNlX2Jyb3dzZXJcIjpcIkNocm9tZVwiLFwicGFydG5lcl9pZHNcIjpbNDc5NiwyMDAyNDFdLFwidmlzaXRvcl9pZFwiOlwiNDIzNzE1NzZcIn0iLCJ1c2VyX3Nlc3Npb25faWQiOiIyN2FlNDliYi00OWYyLTQ4YjctODIwNy05NGE1MTNmZDI5N2IiLCJyb2xlIjoiUGFydG5lclVzZXIiLCJwYXJ0bmVyX2NsaWVudF9pZCI6IjU3MzAiLCJwYXJ0bmVyX3VzZXJfaWQiOiJobWNyZGtlN3FjLVR2QmV0LURlbW9TaXRlLVVzZXItQkVULUVVUiIsImN1cnJlbmN5X2NvZGUiOiJFVVIiLCJjbGllbnRfaWQiOiJQYXJ0bmVyQ2xpZW50VXNlci01NzMwLWhtY3Jka2U3cWMtVHZCZXQtRGVtb1NpdGUtVXNlci1CRVQtRVVSIiwidXNlcl9pZCI6IjQyMzcxNTc2Iiwic2NvcGUiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSJdfQ.b4Nf_PRKpZCDr0KxVQfcR4Vsewx8matl76zOrt2U9Ur-tFXscUU5dMC6EQujGiyCPqpWMWl_On0Ovui1ilEORKgpufjDSwzANiYMPjNDFG-ClKHdZp1xhRNsTqiopC6iLZGUEi_LIAR9yt2OXXCQV3EaETONeUAc0WKK1dHQileaxi2BepMqBEPdoi7iioWFfKLdUKMJfKEr3WCiQ-rT68lZjdQipw6pYFkTQw85Rwm8sT9tFVwSetum6zAvN6T4ipOOr_nCBIDtT_o9T_nHz9gWp0bkb1_91D59b6vUFSrpNQRpiSFTf531GPVspiEqe9QHbGwQbioGGH4OQRdQFEAZvaJ62IL8uprpq7ZV3tofwdx8sLwsHVitZHFAdkE6hD2dc-vzCNp2RfNd2ydLueJKO44QMAAaXL9lzj0ZpceplRjo_TTM_Klo3Mkr-tP6MOkdemfaRItv-S7C220ZPd8yrk0YUBiyWWNbX4uoVZdAiyV2KWXF-aseb5MErttE4fF-g00l40_B3vdXa67gSKns5nGOrHxvzMROFO-x0FidS3kSygTWxcACk7D0tGFGrjOAGrqN5zpy_MhurayaqysHkzidQvybZwKDQERx5MvaPWfRAYrnSx86J-sA-i0LHKkYOemCsSfMs829py2TP8KQ53R5NDfbgKTM_bhz0EA";
+  "wss://tvbetframe.com/proxy-game/game?default-client=5730&access_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IkQyNTk5NTU5REMxNkI5NkZGNkU5OTI2NkQ2MTdBMDgyQjk2MjdDNUEiLCJ0eXAiOiJKV1QiLCJ4NXQiOiIwbG1WV2R3V3VXXzI2WkptMWhlZ2dybGlmRm8ifQ.eyJuYmYiOjE3NzE2MjYyNjgsImV4cCI6MTc3MTYyODA2OCwiaXNzIjoiaHR0cHM6Ly9hcGkubmV0L2lkZW50aXR5LWFwaS8iLCJhdWQiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSIsImh0dHBzOi8vYXBpLm5ldC9pZGVudGl0eS1hcGkvcmVzb3VyY2VzIl0sInRva2VuIjoiIiwidXNlcl9wYXJhbWV0ZXJzIjoie1widXNlcl9pZFwiOjQyMzc4MjMyLFwicGFydG5lcl9jbGllbnRfaWRcIjo1NzMwLFwidXNlcl9pc3Rlc3RcIjp0cnVlLFwiY3VycmVuY3lfY29kZVwiOlwiRVVSXCIsXCJsYW5ndWFnZVwiOlwiZW5cIixcInVzZXJfcmVnaXN0cmF0aW9uX2RhdGVcIjpcIjIwMjYtMDItMjBUMjI6MjQ6MjdaXCIsXCJ0YWdfaWRcIjpudWxsLFwidXNlcl9jbHVzdGVyXCI6bnVsbCxcInBhcnRuZXJfY2xpZW50X2NsdXN0ZXJcIjpcIkxvd1wiLFwiY291bnRyeV9uYW1lXCI6XCJuelwiLFwiZGV2aWNlX25hbWVcIjpcIlwiLFwiZGV2aWNlX29zXCI6XCJXaW5kb3dzXCIsXCJkZXZpY2VfdHlwZVwiOlwiRGVza3RvcFwiLFwiZGV2aWNlX2Jyb3dzZXJcIjpcIkNocm9tZVwiLFwicGFydG5lcl9pZHNcIjpbNDc5NiwyMDAyNDFdLFwidmlzaXRvcl9pZFwiOlwiNDIzNzgyMzJcIn0iLCJ1c2VyX3Nlc3Npb25faWQiOiJjMzI1MGY4Yi0yMDg1LTQyMzgtYTk5MC04MWVhOWIyNGE1YTkiLCJyb2xlIjoiUGFydG5lclVzZXIiLCJwYXJ0bmVyX2NsaWVudF9pZCI6IjU3MzAiLCJwYXJ0bmVyX3VzZXJfaWQiOiJlYTVtcXBkY3A1LVR2QmV0LURlbW9TaXRlLVVzZXItQkVULUVVUiIsImN1cnJlbmN5X2NvZGUiOiJFVVIiLCJjbGllbnRfaWQiOiJQYXJ0bmVyQ2xpZW50VXNlci01NzMwLWVhNW1xcGRjcDUtVHZCZXQtRGVtb1NpdGUtVXNlci1CRVQtRVVSIiwidXNlcl9pZCI6IjQyMzc4MjMyIiwic2NvcGUiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSJdfQ.3MnHfxABXCSrFQC8-d6xblPRwhJbLvmJazU-NaTBT8o49aWJ3kcFPLufezvGHXk9yib8jd4_qeWUI2wiivXk82S2zATw8jJ92zaI0KHCEj1OLXPWX-pVF23R2E8phWKlBbx8cK9i_7QVJEcrd_c8J9xcGcXseh9fCqqnKqJ-6bwZ4gH74IKjETI_HRH7V14gWGYX8Ol85tLiN64GVu3B5ciO1iKrxAPcn0YU-4zJymVyI3qS7ZawgXEpnGL8AjJULBwUjQhokzwDwqf8eBDZz-7OEt9kPJOc_3FuynzwTXgtHO54mWGhTUw_8rpKn_SVni19TbntENX7qsEe4uirWDoEam30qr90nIJ564Ms5hehzA3VhnKqe1zeFqWAyd_Mdxb7PhCdGBVK-mzUBljDhCA3nQCKq0msZ7qGzd-YNKmP5IsV9DXx_leyhxiC_PDghlTJvr0hXgeoPYRN5fK3fSaWFx2XUwoGjZfewQIbUDzToxMZiqP276PDybyTENpQgc66rdAFrE23CbEdVIlvPM68bpk251RosbSZfUvPiHPUXCkX9hSTOq8qYlRlemeB0qYfDql3mBDlVjgA4Dn8TTjFwX6GZVfRUm8wW-B2o2ed5c8vSMfUZWAGqYUl0zpLznd1RvMxwoQLsfFEUQweKzuTHa1ucl4dEpMWpdsYp9E";
 
 const GAME_EVENT = JSON.stringify({
   target: "CurrentGameResultSubscribe",
@@ -18,8 +18,8 @@ function KenoMonitor() {
   const [selectedNumbers, setSelectedNumbers] = useState([]);
   const [selectedNumbersDrawn, setSelectedNumbersDrawn] = useState([]);
   const [confirmedTickets, setConfirmedTickets] = useState([]);
-  const [winLog, setWinLog] = useState([]); // New state for the win log
-  const [gameHistory, setGameHistory] = useState([]); // New state for history
+  const [winLog, setWinLog] = useState([]);
+  const [gameHistory, setGameHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { lastMessage, isConnected, sendMessage } = useWebSocket(WS_URL);
   const [handshake, setHandshake] = useState(false);
@@ -265,7 +265,7 @@ function KenoMonitor() {
             <div className="grid grid-cols-2 gap-2 mb-2 ">
               <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
                 <h4 className="font-bold text-sm text-red-400 mb-2 tracking-widest uppercase">
-                  Hot Numbers (Last 10)
+                  Hot Last 10
                 </h4>
                 <p className="text-gray-300 wrap-break-word text-sm">
                   {stats.hot?.join(", ") || "N/A"}
@@ -273,7 +273,7 @@ function KenoMonitor() {
               </div>
               <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
                 <h4 className="font-bold text-sm text-cyan-400 mb-2 tracking-widest uppercase">
-                  Cold Numbers (Last 10)
+                  Cold Last 10
                 </h4>
                 <p className="text-gray-300 wrap-break-word text-sm">
                   {stats.cold?.join(", ") || "N/A"}
@@ -281,7 +281,7 @@ function KenoMonitor() {
               </div>
               <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
                 <h4 className="font-bold text-sm text-gray-300 mb-2 tracking-widest uppercase">
-                  Most Common (All Time)
+                  Most Drawn
                 </h4>
                 <p className="text-gray-300 wrap-break-word text-sm">
                   {stats.mostCommon?.join(", ") || "N/A"}
@@ -289,14 +289,14 @@ function KenoMonitor() {
               </div>
               <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
                 <h4 className="font-bold text-sm text-gray-400 mb-2 tracking-widest uppercase">
-                  Least Common (All Time)
+                  Least Drawn
                 </h4>
                 <p className="text-gray-300 wrap-break-word text-sm">
                   {stats.leastCommon?.join(", ") || "N/A"}
                 </p>
               </div>
             </div>
-            <div className="grid grid-cols-10 gap-2 md:gap-3 mb-10 place-items-center">
+            <div className="grid grid-cols-10 gap-2 md:gap-3 mb-10 place-items-center ">
               {Array.from({ length: 80 }, (_, i) => i + 1).map((number) => {
                 const isDrawn = drawnNumbers.includes(number);
                 const isSelected = selectedNumbers.includes(number);
@@ -363,7 +363,7 @@ function KenoMonitor() {
         </div>
 
         {/* Stats Panel */}
-        <div className="w-full lg:w-72 shrink-0">
+        <div className="w-full lg:w-72 shrink-0 overflow-y-auto max-h-[90vh] pr-2 mr-2 custom-scrollbar">
           <div className="space-y-4">
             <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
               <p className="text-gray-300 wrap-break-word text-sm">
@@ -385,7 +385,7 @@ function KenoMonitor() {
                 </button>
               )}
             </div>
-            <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm ">
+            <div className="p-4 rounded-xl bg-slate-800/50 border ">
               <div className="space-y-3 overflow-y-auto max-h-[70vh] pr-2 custom-scrollbar">
                 {confirmedTickets.length > 0 ? (
                   confirmedTickets.map((ticket, index) => {
@@ -409,11 +409,11 @@ function KenoMonitor() {
             </div>
 
             {/* Win Log */}
-            <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
+            <div className="fixed left-0  p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
               <h4 className="font-bold text-sm text-green-400 tracking-widest uppercase mb-3">
                 Hit History
               </h4>
-              <div className="space-y-2 overflow-y-auto max-h-[150px] pr-2 custom-scrollbar">
+              <div className="space-y-2 overflow-y-auto max-h-37.5 pr-2 custom-scrollbar">
                 {winLog.length > 0 ? (
                   winLog.map((log, index) => (
                     <div
@@ -443,7 +443,7 @@ function KenoMonitor() {
         className={`
           fixed
           bottom-6
-          right-6
+          left-6
           p-2
           rounded-lg
           text-xs
@@ -459,7 +459,7 @@ function KenoMonitor() {
           }
         `}>
         <span
-          className={`inline-block w-2 h-2 rounded-full mr-2 ${connectionStatus === "Disconnected" ? "bg-red-500 animate-pulse" : "bg-green-500"}`}></span>
+          className={`inline-block w-2 h-2  rounded-full mr-2 ${connectionStatus === "Disconnected" ? "bg-red-500 animate-pulse" : "bg-green-500"}`}></span>
         STATUS: {connectionStatus.toUpperCase()}
       </div>
 
@@ -531,7 +531,7 @@ function KenoMonitor() {
 
         button:hover.ball-standard {
           filter: brightness(1.2);
-          transform: translateY(-2px);
+        ;
         }
       `}</style>
     </div>
