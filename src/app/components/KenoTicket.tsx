@@ -1,4 +1,5 @@
 import React from "react";
+import { useWebSocket } from "./hooks/useWebSocket";
 
 interface KenoTicketProps {
   ticketId?: string;

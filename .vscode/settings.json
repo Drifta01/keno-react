@@ -7,5 +7,13 @@
   "trae.tab.cue": false,
   "trae.tab.enableRename": false,
   "trae.tab.enableAutoImport": false,
-  "trae.tab.enableTabKeyboardShortcuts": false
+  "trae.tab.enableTabKeyboardShortcuts": false,
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "keno-react",
+      "database": "databas.js"
+    }
+  ]
 }
