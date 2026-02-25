@@ -4,6 +4,10 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
 };
+
+
+
+
 import path from 'path';
 module.exports = {
   turbopack: {

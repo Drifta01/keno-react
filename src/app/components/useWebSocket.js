@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from "react";
-import KenoTicket from "../KenoTicket"
+import KenoTicket from "./KenoTicket"
 
 export const useWebSocket = (url) => {
   const [lastMessage, setLastMessage] = useState(null);

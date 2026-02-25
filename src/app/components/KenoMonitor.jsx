@@ -2,9 +2,9 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import KenoTicket from "./KenoTicket";
 
-import { useWebSocket } from "./hooks/useWebSocket";
+import { useWebSocket } from "./useWebSocket";
 const WS_URL =
-  "wss://tvbetframe.com/proxy-game/game?default-client=5730&access_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IkQyNTk5NTU5REMxNkI5NkZGNkU5OTI2NkQ2MTdBMDgyQjk2MjdDNUEiLCJ0eXAiOiJKV1QiLCJ4NXQiOiIwbG1WV2R3V3VXXzI2WkptMWhlZ2dybGlmRm8ifQ.eyJuYmYiOjE3NzE2NTY4NjAsImV4cCI6MTc3MTY1ODY2MCwiaXNzIjoiaHR0cHM6Ly9hcGkubmV0L2lkZW50aXR5LWFwaS8iLCJhdWQiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSIsImh0dHBzOi8vYXBpLm5ldC9pZGVudGl0eS1hcGkvcmVzb3VyY2VzIl0sInRva2VuIjoiIiwidXNlcl9wYXJhbWV0ZXJzIjoie1widXNlcl9pZFwiOjQyMzg3MjIyLFwicGFydG5lcl9jbGllbnRfaWRcIjo1NzMwLFwidXNlcl9pc3Rlc3RcIjp0cnVlLFwiY3VycmVuY3lfY29kZVwiOlwiRVVSXCIsXCJsYW5ndWFnZVwiOlwiZW5cIixcInVzZXJfcmVnaXN0cmF0aW9uX2RhdGVcIjpcIjIwMjYtMDItMjFUMDY6NTQ6MTlaXCIsXCJ0YWdfaWRcIjpudWxsLFwidXNlcl9jbHVzdGVyXCI6bnVsbCxcInBhcnRuZXJfY2xpZW50X2NsdXN0ZXJcIjpcIkxvd1wiLFwiY291bnRyeV9uYW1lXCI6XCJuelwiLFwiZGV2aWNlX25hbWVcIjpcIlwiLFwiZGV2aWNlX29zXCI6XCJXaW5kb3dzXCIsXCJkZXZpY2VfdHlwZVwiOlwiRGVza3RvcFwiLFwiZGV2aWNlX2Jyb3dzZXJcIjpcIkNocm9tZVwiLFwicGFydG5lcl9pZHNcIjpbNDc5NiwyMDAyNDFdLFwidmlzaXRvcl9pZFwiOlwiNDIzODcyMjJcIn0iLCJ1c2VyX3Nlc3Npb25faWQiOiI5ZTcyODZiYi0wNmRmLTRiZTYtOGYzNi0wM2JkOWNjY2QwZTYiLCJyb2xlIjoiUGFydG5lclVzZXIiLCJwYXJ0bmVyX2NsaWVudF9pZCI6IjU3MzAiLCJwYXJ0bmVyX3VzZXJfaWQiOiJicjM3dm5mNWh0LVR2QmV0LURlbW9TaXRlLVVzZXItQkVULUVVUiIsImN1cnJlbmN5X2NvZGUiOiJFVVIiLCJjbGllbnRfaWQiOiJQYXJ0bmVyQ2xpZW50VXNlci01NzMwLWJyMzd2bmY1aHQtVHZCZXQtRGVtb1NpdGUtVXNlci1CRVQtRVVSIiwidXNlcl9pZCI6IjQyMzg3MjIyIiwic2NvcGUiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSJdfQ.hCc7coQmnD3jyqpXTVuPgzux15CrerSMQYn8GO2X99FzdS6y4UcUmqpbiNK2nl69kK2ABKBXjj8HJzuG7Zt1HLCc26gIpRMI7dpUMXUg4XDAqdNuXGX1wgG0vjb2bJkIIJG4u54xUzbfVAqX1vX4L_36QNvTvFRk4dpXuinaxLMI1ZzhijtDUQQiS1kX7Jj6rx8z3UtZ335SwiVFmI0Rh3Hsu3LneEXqu_SHWvgKoYbiwMVZJywwK8lFOQgUlO8LAGxhNts_yDEaU1KpGUV69SdeqfPXm8ZdO5KzATH0uyg5UeeNFOLTY6aGJrMo1oy_2Y6sQUJ2OLBM5CLzsKtqT2ez3x4UuQkWQ8UgcdvmHQYoY6ByuhXxX1KYEqDUVzeqd13BfnsFE-Zk1gaErZEPiJWc24z0xy5ZS36kha6iBvk3v6hiivORKcTPImS8Z4YkAKgNMy9QiNIbfJGEyDHJDRKi26xof-1ndKqetglHZSsHjHorfI3PJxQ8r5UhuEIJMk4dQ6nk7p_WRskl8hz9I2BDJORq4qvZg2N1ljs4bJfdZtaQXwzC9lun2UN0wmQ6j7sLLTcafMucVbZGbM8mKYHlut6izRQQZKxRO0WEU3xPLQkmsEEt6co3yc2SyJkx00aKv8jXAa8zv8dUxq1R-aPUa8U_iSoHAd3J1fK9deQ";
+  "wss://tvbetframe.com/proxy-game/game?default-client=5730&access_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IkQyNTk5NTU5REMxNkI5NkZGNkU5OTI2NkQ2MTdBMDgyQjk2MjdDNUEiLCJ0eXAiOiJKV1QiLCJ4NXQiOiIwbG1WV2R3V3VXXzI2WkptMWhlZ2dybGlmRm8ifQ.eyJuYmYiOjE3NzE5OTg2NDMsImV4cCI6MTc3MjAwMDQ0MywiaXNzIjoiaHR0cHM6Ly9hcGkubmV0L2lkZW50aXR5LWFwaS8iLCJhdWQiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSIsImh0dHBzOi8vYXBpLm5ldC9pZGVudGl0eS1hcGkvcmVzb3VyY2VzIl0sInRva2VuIjoiIiwidXNlcl9wYXJhbWV0ZXJzIjoie1widXNlcl9pZFwiOjQyNDkxMjgwLFwicGFydG5lcl9jbGllbnRfaWRcIjo1NzMwLFwidXNlcl9pc3Rlc3RcIjp0cnVlLFwiY3VycmVuY3lfY29kZVwiOlwiRVVSXCIsXCJsYW5ndWFnZVwiOlwiZW5cIixcInVzZXJfcmVnaXN0cmF0aW9uX2RhdGVcIjpcIjIwMjYtMDItMjVUMDU6NTA6NDNaXCIsXCJ0YWdfaWRcIjpudWxsLFwidXNlcl9jbHVzdGVyXCI6bnVsbCxcInBhcnRuZXJfY2xpZW50X2NsdXN0ZXJcIjpcIkxvd1wiLFwiY291bnRyeV9uYW1lXCI6XCJuelwiLFwiZGV2aWNlX25hbWVcIjpcIlwiLFwiZGV2aWNlX29zXCI6XCJXaW5kb3dzXCIsXCJkZXZpY2VfdHlwZVwiOlwiRGVza3RvcFwiLFwiZGV2aWNlX2Jyb3dzZXJcIjpcIkNocm9tZVwiLFwicGFydG5lcl9pZHNcIjpbNDc5NiwyMDAyNDFdLFwidmlzaXRvcl9pZFwiOlwiNDI0OTEyODBcIn0iLCJ1c2VyX3Nlc3Npb25faWQiOiIwZmY0ZjUxZC03YWQ2LTQ3OGEtYTVjMy00YzlkNjJjZGI2ZDEiLCJyb2xlIjoiUGFydG5lclVzZXIiLCJwYXJ0bmVyX2NsaWVudF9pZCI6IjU3MzAiLCJwYXJ0bmVyX3VzZXJfaWQiOiI2dWFsMWJyamF1LVR2QmV0LURlbW9TaXRlLVVzZXItQkVULUVVUiIsImN1cnJlbmN5X2NvZGUiOiJFVVIiLCJjbGllbnRfaWQiOiJQYXJ0bmVyQ2xpZW50VXNlci01NzMwLTZ1YWwxYnJqYXUtVHZCZXQtRGVtb1NpdGUtVXNlci1CRVQtRVVSIiwidXNlcl9pZCI6IjQyNDkxMjgwIiwic2NvcGUiOlsiYmV0cy1hcGkiLCJmZWVkcy1hcGkiLCJzaWduYWxyLWZlZWQtYXBpIiwiZXh0ZXJuYWwtY2xpZW50LWFwaSIsInBhcnRuZXJzLWFwaSIsIndlYiIsInNpZ25hbHItYXBpIiwiY2hhdHMtc2lnbmFsci1hcGkiLCJwcm9tb2NvZGVzLWFwaSJdfQ.HXcGNGWAxgasXVlayQk7zXVhAwbsCVNNo5r1TfAHvSA2oWxD3Bv8g-WhGPXSCtzocDW1ymdequ23tEnq41sO6g9BmzMFvZWihILz3Enr1BIJumRlWsVYB66SbeyG-7ZijqkgBCR4LB_MTsy1bbF0MLfOa9JER9TbfzyninfNDWQOHYZH7g3ChfLijYDHUEeEC0xLiJI6gfTNfLSBreTS3BSF0j48zGE5mhnPbBTitJB_sbiE-mPdPfnRccC9j_hl6tYH_yMBrIYVwcfuNcr4pDnim1u4FwJ51isUmM902JbYYPcFdquCG_vaxLSa8WSmCSi5b4SzPDaLl_O-7AUrjgRClJJhAHFlWLJwvtl8nBnWxJJ1m-TATgz7S5dZKl-Kf3L2xYsjmk72ClpwatWzQ_CAs9CJaK3vTaQ2qbyxKmt5Mp5QzjYy8JypXQ5iHP9aBC8tnxHackdfqIm-yAhyu6chdERBMCXdi8mX2d304tR7Bksr-7wLIcxbDcpDbjeLNjW3T1GaeSz9XrMlJz65JhYARORYHxCCXjVptHhvRR1QFELVZFFcul5SfZKtGpmsOQ2i0ZqhcqrbFq6DA98QbnBZ9XkzgoTSZccXX8QHMqnwAIGirvyNKzKY6LW-BKvjq8Ke94uib0Ftr5CO9clzH8Zz5XT0sTjxVF13kyKS8pQ";
 
 const GAME_EVENT = JSON.stringify({
   target: "CurrentGameResultSubscribe",
@@ -14,6 +14,7 @@ const GAME_EVENT = JSON.stringify({
 });
 
 function KenoMonitor() {
+  const [activeTab, setActiveTab] = useState("slip");
   const [drawnNumbers, setDrawnNumbers] = useState([]);
   const [selectedNumbers, setSelectedNumbers] = useState([]);
   const [selectedNumbersDrawn, setSelectedNumbersDrawn] = useState([]);
@@ -30,6 +31,54 @@ function KenoMonitor() {
     mostCommon: [],
     leastCommon: [],
   });
+  useEffect(() => {
+    if (gameHistory.length > 0) {
+      const allNumbers = gameHistory.reduce(
+        (acc, game) => acc.concat(game.numbers),
+        [],
+      );
+      const frequency = allNumbers.reduce((acc, num) => {
+        acc[num] = (acc[num] || 0) + 1;
+        return acc;
+      }, {});
+
+      const sortedByFrequency = Object.entries(frequency).sort(
+        ([, a], [, b]) => b - a,
+      );
+
+      const mostCommon = sortedByFrequency
+        .slice(0, 5)
+        .map(([num]) => parseInt(num, 10));
+      const leastCommon = sortedByFrequency
+        .slice(-5)
+        .map(([num]) => parseInt(num, 10))
+        .reverse();
+
+      const recentHistory = gameHistory.slice(0, 10);
+      const recentNumbers = recentHistory.reduce(
+        (acc, game) => acc.concat(game.numbers),
+        [],
+      );
+      const recentFrequency = recentNumbers.reduce((acc, num) => {
+        acc[num] = (acc[num] || 0) + 1;
+        return acc;
+      }, {});
+
+      const sortedByRecentFrequency = Object.entries(recentFrequency).sort(
+        ([, a], [, b]) => b - a,
+      );
+
+      const hot = sortedByRecentFrequency
+        .slice(0, 5)
+        .map(([num]) => parseInt(num, 10));
+      const cold = sortedByRecentFrequency
+        .slice(-5)
+        .map(([num]) => parseInt(num, 10))
+        .reverse();
+
+      setStats({ mostCommon, leastCommon, hot, cold });
+    }
+  }, [gameHistory]);
 
   const handleNumberClick = (number) => {
     if (drawnNumbers.includes(number)) {
@@ -147,7 +196,7 @@ function KenoMonitor() {
                       setSelectedNumbers([]);
                       setSelectedNumbersDrawn([]);
                       clearBoardTimerRef.current = null;
-                    }, 10000);
+                    }, 20000);
                   }
                 }
               }
@@ -167,83 +216,90 @@ function KenoMonitor() {
     }
   }, [lastMessage, isLoading]);
 
-  useEffect(() => {
-    if (gameHistory.length > 0) {
-      const allNumbers = gameHistory.reduce(
-        (acc, game) => acc.concat(game.numbers),
-        [],
-      );
-      const frequency = allNumbers.reduce((acc, num) => {
-        acc[num] = (acc[num] || 0) + 1;
-        return acc;
-      }, {});
-
-      const sortedByFrequency = Object.entries(frequency).sort(
-        ([, a], [, b]) => b - a,
-      );
-
-      const mostCommon = sortedByFrequency
-        .slice(0, 5)
-        .map(([num]) => parseInt(num, 10));
-      const leastCommon = sortedByFrequency
-        .slice(-5)
-        .map(([num]) => parseInt(num, 10))
-        .reverse();
-
-      const recentHistory = gameHistory.slice(0, 10);
-      const recentNumbers = recentHistory.reduce(
-        (acc, game) => acc.concat(game.numbers),
-        [],
-      );
-      const recentFrequency = recentNumbers.reduce((acc, num) => {
-        acc[num] = (acc[num] || 0) + 1;
-        return acc;
-      }, {});
-
-      const sortedByRecentFrequency = Object.entries(recentFrequency).sort(
-        ([, a], [, b]) => b - a,
-      );
-
-      const hot = sortedByRecentFrequency
-        .slice(0, 5)
-        .map(([num]) => parseInt(num, 10));
-      const cold = sortedByRecentFrequency
-        .slice(-5)
-        .map(([num]) => parseInt(num, 10))
-        .reverse();
-
-      setStats({ mostCommon, leastCommon, hot, cold });
-    }
-  }, [gameHistory]);
-
-  const connectionStatus = isConnected ? "Connected" : "Disconnected";
+  const connectionStatus = isConnected ? "" : "";
 
   return (
-    <div className="bg-[#0f172a] text-white min-h-screen flex grow p-4 md:p-8 font-sans">
-      <div className="flex flex-col lg:flex-row gap-8  max-w-screen-2xl mx-auto">
-        {/* Results */}
-        <div className="w-full md:w-100 shrink-0">
-          <h2 className="text-1xl text-blue-400 font-bold mb-0 flex gap-0">
+    <div className="flex h-screen overflow-hidden bg-[#080c14] text-white font-sans">
+      {/* ── LEFT PANEL: Connection + Results + Stats ── */}
+      <div className="w-100 shrink-0 flex flex-col border-r border-slate-800 bg-[#0d1420] overflow-hidden">
+        {/* Connection badge */}
+        <div className="px-4 py-3 border-b border-slate-800 flex items-center gap-2">
+          <span
+            className={`w-2 h-2 rounded-full shrink-0 ${
+              connectionStatus === "Disconnected"
+                ? "bg-red-500 animate-pulse"
+                : "bg-green-500"
+            }`}
+          />
+          <span
+            className={`text-sm font-mono font-bold tracking-widest uppercase ${
+              connectionStatus === "Disconnected"
+                ? "text-red-400"
+                : "text-green-400"
+            }`}>
+            {connectionStatus}connected
+            <div className="mb-4 px-4 py-3 border-b mt-0 w-80  border-slate-800 space-y-2">
+              {[
+                {
+                  label: "Hot Last 10",
+                  color: "text-red-400",
+                  value: stats.hot?.join(", ") || "N/A",
+                },
+                {
+                  label: "Cold Last 10",
+                  color: "text-cyan-400",
+                  value: stats.cold?.join(", ") || "N/A",
+                },
+                {
+                  label: "Most Drawn",
+                  color: "text-gray-300",
+                  value: stats.mostCommon?.join(", ") || "N/A",
+                },
+                {
+                  label: "Least Drawn",
+                  color: "text-gray-500",
+                  value: stats.leastCommon?.join(", ") || "N/A",
+                },
+              ].map(({ label, color, value }) => (
+                <div
+                  key={label}
+                  className="px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700/40">
+                  <p
+                    className={`text-[14px] justify-self-center font-mono uppercase tracking-wider mb-0.5 ${color}`}>
+                    {label}
+                  </p>
+                  <p className="text-xs text-gray-300 font-mono wrap-break-word">
+                    {value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </span>
+        </div>
+
+        {/* Results header + list */}
+        <div className="  px-4 pt-3 pb-1 border-b border-slate-800">
+          <h2 className="text-xs font-mono text-blue-400 uppercase tracking-widest mb-2">
             Results
           </h2>
-          <div className="space-y-1 overflow-y-auto max-h-[90vh] pr-2 custom-scrollbar">
+          <div className="space-y-2 overflow-y-auto max-h-screen pr-1 custom-scrollbar">
             {isLoading && gameHistory.length === 0 ? (
-              <p className="text-gray-400 animate-pulse">
+              <p className="text-gray-500 text-xs italic animate-pulse">
                 Waiting for first game to complete...
               </p>
             ) : gameHistory.length > 0 ? (
               gameHistory.map((game) => (
                 <div
                   key={game.id}
-                  className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm hover:bg-slate-800 transition-colors">
-                  <h4 className="font-bold text-sm text-blue-300 mb-2 tracking-widest uppercase r">
-                    Game ID: {game.id}
-                  </h4>
-                  <div className="flex flex-wrap gap-1">
+                  className="p-2 rounded-lg bg-slate-800/50 border border-slate-700/40  hover:bg-slate-800 transition-colors">
+                  <p className="text-[10px] font-mono text-blue-300 uppercase tracking-wider mb-1">
+                    {game.id}
+                  </p>
+                  <div className="grid grid-cols-10 gap-1 ">
                     {game.numbers.map((n, idx) => (
                       <span
                         key={idx}
-                        className="text-xs bg-slate-700 px-2 py-1 rounded text-gray-300">
+                        className="text-[20px] font-mono bg-slate-700 px-1 py-0.5 rounded text-gray-300">
                         {n}
                       </span>
                     ))}
@@ -251,231 +307,243 @@ function KenoMonitor() {
                 </div>
               ))
             ) : (
-              <p className="text-gray-400 italic">
-                No game history yet. Completed games will appear here.
+              <p className="text-gray-600 italic text-xs">
+                No game history yet.
               </p>
             )}
           </div>
         </div>
 
-        {/* Middle Column: Keno Grid */}
-        <div className="flex flex-row-reverse w-fit ">
-          <div className="w-full px-4 bg-black/40 p-2 rounded-3xl border: border-slate-800 shadow-2xl">
-            {/* Statistics  */}
-            <div className="grid grid-cols-2 gap-2 mb-2 ">
-              <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-                <h4 className="font-bold text-sm text-red-400 mb-2 tracking-widest uppercase">
-                  Hot Last 10
-                </h4>
-                <p className="text-gray-300 wrap-break-word text-sm">
-                  {stats.hot?.join(", ") || "N/A"}
-                </p>
-              </div>
-              <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-                <h4 className="font-bold text-sm text-cyan-400 mb-2 tracking-widest uppercase">
-                  Cold Last 10
-                </h4>
-                <p className="text-gray-300 wrap-break-word text-sm">
-                  {stats.cold?.join(", ") || "N/A"}
-                </p>
-              </div>
-              <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-                <h4 className="font-bold text-sm text-gray-300 mb-2 tracking-widest uppercase">
-                  Most Drawn
-                </h4>
-                <p className="text-gray-300 wrap-break-word text-sm">
-                  {stats.mostCommon?.join(", ") || "N/A"}
-                </p>
-              </div>
-              <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-                <h4 className="font-bold text-sm text-gray-400 mb-2 tracking-widest uppercase">
-                  Least Drawn
-                </h4>
-                <p className="text-gray-300 wrap-break-word text-sm">
-                  {stats.leastCommon?.join(", ") || "N/A"}
-                </p>
-              </div>
-            </div>
-            <div className="grid grid-cols-10 gap-2 md:gap-3 mb-10 place-items-center ">
-              {Array.from({ length: 80 }, (_, i) => i + 1).map((number) => {
-                const isDrawn = drawnNumbers.includes(number);
-                const isSelected = selectedNumbers.includes(number);
+        {/* Stats */}
 
-                let isInConfirmed = false;
-                for (const ticket of confirmedTickets) {
-                  if (ticket.includes(number)) {
-                    isInConfirmed = true;
-                    break;
-                  }
-                }
-
-                const isMatch = isDrawn && isInConfirmed;
-
-                return (
-                  <button
-                    key={number}
-                    onClick={() => handleNumberClick(number)}
-                    className={`
-                      relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 
-                      flex items-center justify-center rounded-full
-                      transition-all duration-200 active:scale-90
-                      ${isMatch ? "ball-selected-drawn" : isDrawn ? "ball-drawn" : isSelected ? "ball-selected" : "ball-standard"}
-                    `}>
-                    <span
-                      className={`z-10 font-black text-xs md:text-base select-none ${isDrawn ? "text-black" : isSelected ? "text-white" : "text-black"}`}>
-                      {number}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="flex flex-col sm:flex-row justify-center gap-4 md:gap-8">
-              <button
-                onClick={() => {
-                  setSelectedNumbers([]);
-                  setSelectedNumbersDrawn([]);
-                }}
-                className="px-12 py-4 rounded-full border border-white/10 bg-white/5 text-gray-400 font-bold uppercase tracking-widest hover:bg-white/10 transition-all active:scale-95 shadow-lg">
-                CLEAR
-              </button>
-              <button
-                onClick={() => {
-                  if (selectedNumbers.length > 0) {
-                    setConfirmedTickets((prev) => [...prev, selectedNumbers]);
-                    setSelectedNumbers([]);
-                  }
-                }}
-                className="px-12 py-4 rounded-full bg-linear-to-b from-[#facc15] to-[#a16207] text-black font-black uppercase tracking-widest hover:brightness-110 transition-all active:scale-95 shadow-[0_0_20px_rgba(234,179,8,0.3)]">
-                CONFIRM
-              </button>
-            </div>
-
-            <div className="text-center mt-6">
-              <p className="text-xl font-semibold text-gray-300">
-                Numbers Drawn:{" "}
-                <span className="text-white font-bold">
-                  {drawnNumbers.length} / 20
-                </span>
+        {/* Hit History */}
+        <div className="hidden flex-1 overflow-y-auto px-4 py-3 custom-scrollbar">
+          <h4 className="text-[10px] font-mono text-green-400 uppercase tracking-widest mb-2">
+            Hit History
+          </h4>
+          <div className="space-y-1">
+            {winLog.length > 0 ? (
+              winLog.map((log, index) => (
+                <div
+                  key={index}
+                  className="text-xs p-2 rounded-lg bg-green-900/20 border border-green-800/30">
+                  <p className="font-bold text-green-300 font-mono">
+                    Ticket {log.ticketId} — {log.hits} hit
+                    {log.hits > 1 ? "s" : ""}
+                  </p>
+                  <p className="text-[10px] text-gray-500 font-mono">
+                    {log.timestamp.toLocaleTimeString()}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-600 italic text-xs">
+                No wins recorded yet.
               </p>
-            </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── CENTER: Keno Grid ── */}
+      <div className="flex-1 flex flex-col overflow-hidden bg-[#080c14] border border-white">
+        {/* Top bar */}
+        <div className="flex items-center justify-between px-6 py-3 border-b border-slate-800 bg-[#0d1420]">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-mono text-gray-500 uppercase tracking-wider">
+              Numbers Drawn
+            </span>
+            <span className="text-amber-400 font-mono font-bold text-lg">
+              {drawnNumbers.length} / 20
+            </span>
+          </div>
+          <div className="hidden sm:flex gap-4 text-[10px] font-mono text-gray-500 uppercase tracking-wider">
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full ball-standard-sm inline-block" />{" "}
+              Standard
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-[#1e3a5f] border border-white inline-block" />{" "}
+              Selected
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-yellow-500 inline-block" />{" "}
+              Drawn
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-green-500 inline-block" />{" "}
+              Hit
+            </span>
           </div>
         </div>
 
-        {/* Stats Panel */}
-        <div className="w-full lg:w-72 shrink-0 overflow-y-auto max-h-[90vh] pr-2 mr-2 custom-scrollbar">
-          <div className="space-y-4">
-            <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-              <p className="text-gray-300 wrap-break-word text-sm">
-                {selectedNumbers.length > 0
-                  ? selectedNumbers.join(", ")
-                  : "selected numbers will appear here."}
-              </p>
-            </div>
-            {/* Confirmed Tickets */}
-            <h4 className="font-bold text-sm text-amber-400 tracking-widest uppercase float-r">
+        {/* Ball grid */}
+        <div className="flex-1 flex items-center justify-center px-2 py-2 overflow-auto">
+          <div className="grid grid-cols-10 gap-2 place-items-center">
+            {Array.from({ length: 80 }, (_, i) => i + 1).map((number) => {
+              const isDrawn = drawnNumbers.includes(number);
+              const isSelected = selectedNumbers.includes(number);
+
+              let isInConfirmed = false;
+              for (const ticket of confirmedTickets) {
+                if (ticket.includes(number)) {
+                  isInConfirmed = true;
+                  break;
+                }
+              }
+              const isMatch = isDrawn && isInConfirmed;
+
+              return (
+                <button
+                  key={number}
+                  onClick={() => handleNumberClick(number)}
+                  className={`
+                    relative w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11
+                    flex items-center justify-center rounded-full
+                    transition-all duration-200 active:scale-90
+                    ${isMatch ? "ball-selected-drawn" : isDrawn ? "ball-drawn" : isSelected ? "ball-selected" : "ball-standard"}
+                  `}>
+                  <span
+                    className={`z-10 font-black text-xs select-none
+                      ${isMatch || isDrawn ? "text-black" : isSelected ? "text-white" : "text-black"}
+                    `}>
+                    {number}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div className="px-6 py-4 border-t border-slate-800 bg-[#0d1420] flex items-center justify-between">
+          <button
+            onClick={() => {
+              setSelectedNumbers([]);
+              setSelectedNumbersDrawn([]);
+            }}
+            className="px-8 py-2.5 rounded-lg border border-slate-600 bg-slate-800 text-gray-400 text-sm font-mono font-bold uppercase tracking-widest hover:bg-slate-700 transition-all active:scale-95">
+            Clear
+          </button>
+          <button
+            onClick={() => {
+              if (selectedNumbers.length > 0) {
+                setConfirmedTickets((prev) => [...prev, selectedNumbers]);
+                setSelectedNumbers([]);
+              }
+            }}
+            className="px-10 py-2.5 rounded-lg bg-linear-to-b from-yellow-400 to-amber-600 text-black text-sm font-black uppercase tracking-widest hover:brightness-110 transition-all active:scale-95 shadow-lg shadow-amber-900/40">
+            Confirm
+          </button>
+        </div>
+      </div>
+
+      {/* ── RIGHT PANEL: Selected + Tickets ── */}
+      <div className="w-100 shrink-0 flex flex-col border-l border-slate-800 bg-[#0d1420] overflow-hidden">
+        {/* Tabs */}
+        <div className="flex border-b border-slate-800">
+          <button
+            onClick={() => setActiveTab?.("slip")}
+            className={`flex-1 py-3 text-[10px] font-mono uppercase tracking-widest transition-colors
+              ${
+                !activeTab || activeTab === "slip"
+                  ? "text-amber-400 border-b-2 border-amber-400"
+                  : "text-gray-500 hover:text-gray-300"
+              }`}>
+            Bet Slip
+          </button>
+          <button
+            onClick={() => setActiveTab?.("tickets")}
+            className={`flex-1 py-3 text-[10px] font-mono uppercase tracking-widest transition-colors
+              ${
+                activeTab === "tickets"
+                  ? "text-amber-400 border-b-2 border-amber-400"
+                  : "text-gray-500 hover:text-gray-300"
+              }`}>
+            Tickets
+          </button>
+        </div>
+
+        {/* Selected numbers preview */}
+        <div className="px-4 py-3 border-b border-slate-800">
+          <p className="text-[10px] font-mono text-gray-500 uppercase tracking-wider mb-2">
+            Selected Numbers
+          </p>
+          <div className="flex flex-wrap gap-1 min-h-8">
+            {selectedNumbers.length > 0 ? (
+              [...selectedNumbers]
+                .sort((a, b) => a - b)
+                .map((n) => (
+                  <span
+                    key={n}
+                    className="inline-flex items-center justify-center w-7 h-7 rounded-full text-[10px] font-mono font-bold
+                    bg-linear-to-b from-slate-600 to-slate-800 border border-white text-white">
+                    {n}
+                  </span>
+                ))
+            ) : (
+              <p className="text-xs text-gray-600 italic">None selected</p>
+            )}
+          </div>
+        </div>
+
+        {/* Confirmed Tickets */}
+        <div className="flex-1 overflow-y-auto px-4 py-3 custom-scrollbar">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-[10px] font-mono text-amber-400 uppercase tracking-widest">
               Confirmed Tickets
             </h4>
-            <div className="flex justify-between items-center mb-2 ">
-              {confirmedTickets.length > 0 && (
-                <button
-                  onClick={() => setConfirmedTickets([])}
-                  className="text-xs bg-red-800 hover:bg-red-700 text-white font-bold py-1 px-2 rounded transition-colors">
-                  Clear All
-                </button>
-              )}
-            </div>
-            <div className="p-4 rounded-xl bg-slate-800/50 border ">
-              <div className="space-y-3 overflow-y-auto max-h-[70vh] pr-2 custom-scrollbar">
-                {confirmedTickets.length > 0 ? (
-                  confirmedTickets.map((ticket, index) => {
-                    const hits = ticket.filter((number) =>
-                      drawnNumbers.includes(number),
-                    );
-                    return (
-                      <KenoTicket
-                        key={index}
-                        ticketId={`#${index + 1}`}
-                        selectedNumbers={ticket}
-                        drawnNumbers={drawnNumbers}
-                        hitsCount={hits.length}
-                      />
-                    );
-                  })
-                ) : (
-                  <p className="text-gray-500 italic">No tickets confirmed.</p>
-                )}
-              </div>
-            </div>
+            {confirmedTickets.length > 0 && (
+              <button
+                onClick={() => setConfirmedTickets([])}
+                className="text-[10px] font-mono bg-red-900/50 hover:bg-red-800/60 text-red-400 py-0.5 px-2 rounded border border-red-800/50 transition-colors">
+                Clear All
+              </button>
+            )}
+          </div>
 
-            {/* Win Log */}
-            <div className="fixed left-0  p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-              <h4 className="font-bold text-sm text-green-400 tracking-widest uppercase mb-3">
-                Hit History
-              </h4>
-              <div className="space-y-2 overflow-y-auto max-h-37.5 pr-2 custom-scrollbar">
-                {winLog.length > 0 ? (
-                  winLog.map((log, index) => (
-                    <div
-                      key={index}
-                      className="text-sm p-2 rounded-lg bg-green-900/30">
-                      <p className="font-bold text-green-300">
-                        Ticket {log.ticketId} scored {log.hits} hit
-                        {log.hits > 1 ? "s" : ""}!
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        {log.timestamp.toLocaleTimeString()}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-500 italic text-sm">
-                    No wins recorded yet.
-                  </p>
-                )}
-              </div>
-            </div>
+          <div className="space-y-2">
+            {confirmedTickets.length > 0 ? (
+              confirmedTickets.map((ticket, index) => {
+                const hits = ticket.filter((number) =>
+                  drawnNumbers.includes(number),
+                );
+                return (
+                  <KenoTicket
+                    key={index}
+                    ticketId={`#${index + 1}`}
+                    selectedNumbers={ticket}
+                    drawnNumbers={drawnNumbers}
+                    hitsCount={hits.length}
+                  />
+                );
+              })
+            ) : (
+              <p className="text-gray-600 italic text-xs">
+                No tickets confirmed.
+              </p>
+            )}
           </div>
         </div>
       </div>
-
-      <div
-        className={`
-          fixed
-          bottom-6
-          left-6
-          p-2
-          rounded-lg
-          text-xs
-          font-bold
-          tracking-wider
-          transition-all
-          shadow-lg
-          z-50
-          ${
-            connectionStatus === "Disconnected"
-              ? "bg-red-950/80 text-red-400 border border-red-900"
-              : "bg-green-950/80 text-green-400 border border-slate-500"
-          }
-        `}>
-        <span
-          className={`inline-block w-2 h-2  rounded-full mr-2 ${connectionStatus === "Disconnected" ? "bg-red-500 animate-pulse" : "bg-green-500"}`}></span>
-        STATUS: {connectionStatus.toUpperCase()}
-      </div>
+      {/* <div className="mt-8 w-full max-w-5xl">
+        <h2 className="text-2xl font-bold mb-0 text-white">
+          Historical Results from DB
+        </h2>
+        {loading && <p>Loading results...</p>}
+        {error && <p className="text-red-500">Error: {error}</p>}
+        {results && (
+          <pre className="bg-gray-800 p-4 rounded-lg text-sm overflow-auto">
+            {JSON.stringify(results, null, 2)}
+          </pre>
+        )}
+      </div> */}
 
       <style>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #334155;
-          border-radius: 10px;
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
 
-        /* Standard Red 3D Ball */
         .ball-standard {
           background: radial-gradient(circle at 35% 35%, #ff5f5f, #cc0000 60%, #660000 100%);
           box-shadow: inset -3px -3px 6px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.5);
@@ -483,21 +551,22 @@ function KenoMonitor() {
         .ball-standard::before {
           content: '';
           position: absolute;
-          width: 65%;
-          height: 65%;
+          width: 65%; height: 65%;
           background: white;
           border-radius: 50%;
           z-index: 1;
         }
 
-        /* Selected State - Glowing Blue/Dark */
+        .ball-standard-sm {
+          background: radial-gradient(circle at 35% 35%, #ff5f5f, #cc0000 60%, #660000 100%);
+        }
+
         .ball-selected {
           background: radial-gradient(circle at 35% 35%, #334155, #0f172a 70%, #000 100%);
           box-shadow: 0 0 15px #3b82f6, inset 0 0 10px rgba(255,255,255,0.2);
           border: 2px solid #fff;
         }
 
-        /* Drawn State - Golden/Yellow 3D Ball */
         .ball-drawn {
           background: radial-gradient(circle at 35% 35%, #fde047, #eab308 60%, #854d0e 100%);
           box-shadow: inset -3px -3px 6px rgba(0,0,0,0.4), 0 0 15px rgba(234,179,8,0.5);
@@ -505,34 +574,27 @@ function KenoMonitor() {
         .ball-drawn::before {
           content: '';
           position: absolute;
-          width: 65%;
-          height: 65%;
+          width: 65%; height: 65%;
           background: rgba(255,255,255,0.8);
           border-radius: 50%;
           z-index: 1;
         }
-        /* Selected & Drawn State - Glowing Green "Win" Ball */
+
         .ball-selected-drawn {
-          background: radial-gradient(circle at 35% 35%, #86efac, #16a34a 70%, #14532d 100%); /* Light green to dark green */
-          box-shadow: inset -3px -3px 6px rgba(0,0,0,0.4), 0 0 20px #34d399, 0 0 10px #10b981; /* Inner shadow + green glow */
-          border: 2px solid #f0fdf4; /* A very light green/white border */
+          background: radial-gradient(circle at 35% 35%, #86efac, #16a34a 70%, #14532d 100%);
+          box-shadow: inset -3px -3px 6px rgba(0,0,0,0.4), 0 0 20px #34d399, 0 0 10px #10b981;
+          border: 2px solid #f0fdf4;
         }
         .ball-selected-drawn::before {
           content: '';
           position: absolute;
-          width: 65%;
-          height: 65%;
-          background: white; /* The inner circle for the number */
+          width: 65%; height: 65%;
+          background: white;
           border-radius: 50%;
           z-index: 1;
         }
 
-
-
-        button:hover.ball-standard {
-          filter: brightness(1.2);
-        ;
-        }
+        button:hover.ball-standard { filter: brightness(1.2); }
       `}</style>
     </div>
   );

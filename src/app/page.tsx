@@ -32,21 +32,8 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-4">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <KenoMonitor />
-      </div>
-
-      <div className="mt-8 w-full max-w-5xl">
-        <h2 className="text-2xl font-bold mb-4">Historical Results from DB</h2>
-        {loading && <p>Loading results...</p>}
-        {error && <p className="text-red-500">Error: {error}</p>}
-        {results && (
-          <pre className="bg-gray-800 p-4 rounded-lg text-sm overflow-auto">
-            {JSON.stringify(results, null, 2)}
-          </pre>
-        )}
-      </div>
+    <main>
+      <KenoMonitor />
     </main>
   );
 }
